@@ -1,0 +1,43 @@
+image:
+  file: .gitpod/.gitpod.dockerfile
+tasks:
+  - name: Laravel Logs
+    command: tail -F $GITPOD_REPO_ROOT/storage/logs/laravel.log
+
+  - name: Web server logs
+    command: gp sync-await ddev && docker logs -f ddev-app-web
+
+  - name: DB server logs
+    command: gp sync-await ddev && docker logs -f ddev-app-db
+
+  - name: Terminal
+    command: zsh
+    
+  - name: Dev Server
+    before: bash .gitpod/gitpod-before.sh
+    init: bash .gitpod/gitpod-init.sh
+    command: source .gitpod/gitpod-command.sh
+    openMode: split-right
+
+ports:
+  - port: 8080
+    onOpen: open-preview
+    visibility: public
+
+github:
+  prebuilds:
+    # enable for the default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: false
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: false
+    # add a check to pull requests (defaults to true)
+    addCheck: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+    addComment: false
+    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+    addBadge: false
+    

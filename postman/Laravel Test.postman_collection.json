@@ -1,0 +1,2115 @@
+{
+	"info": {
+		"_postman_id": "2c491b7c-d0d9-4820-8170-3a2114140303",
+		"name": "Laravel Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9482859"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"token is returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"authorisation.token\");",
+											"    pm.environment.set(\"adminToken\", jsonData.authorisation.token);",
+											"});",
+											"",
+											"pm.test(\"user is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.not.have.jsonBody(\"user.password\");",
+											"    pm.response.to.have.jsonBody(\"user.id\");",
+											"    pm.response.to.have.jsonBody(\"user.email\");",
+											"    pm.response.to.have.jsonBody(\"user.name\");",
+											"    pm.environment.set(\"user1ID\", jsonData.user.id);",
+											"    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"adminUsername\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/login",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "UserList",
+					"item": [
+						{
+							"name": "View Users Index",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"pagination checks\", function () {",
+											"    pm.response.to.have.jsonBody(\"current_page\");",
+											"    pm.response.to.have.jsonBody(\"first_page_url\");",
+											"    pm.response.to.have.jsonBody(\"from\");",
+											"    pm.response.to.have.jsonBody(\"last_page\");",
+											"    pm.response.to.have.jsonBody(\"last_page_url\");",
+											"    pm.response.to.have.jsonBody(\"links\");",
+											"    pm.response.to.have.jsonBody(\"next_page_url\");",
+											"    pm.response.to.have.jsonBody(\"path\");",
+											"    pm.response.to.have.jsonBody(\"per_page\");",
+											"    pm.response.to.have.jsonBody(\"prev_page_url\");",
+											"    pm.response.to.have.jsonBody(\"to\");",
+											"    pm.response.to.have.jsonBody(\"total\");",
+											"    pm.response.to.have.jsonBody(\"data\");",
+											"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/users",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{adminToken}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Register",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"token is returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"authorisation.token\");",
+											"    pm.environment.set(\"user1Token\", jsonData.authorisation.token);",
+											"});",
+											"",
+											"pm.test(\"user is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.not.have.jsonBody(\"user.password\");",
+											"    pm.response.to.have.jsonBody(\"user.id\");",
+											"    pm.response.to.have.jsonBody(\"user.email\");",
+											"    pm.response.to.have.jsonBody(\"user.name\");",
+											"    pm.environment.set(\"user1ID\", jsonData.user.id);",
+											"    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"user1Username\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set('user1Username', 'test' + (new Date().valueOf()) + '@example.com');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"{{user1Username}}\",\n    \"password\": \"{{user1Password}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/register",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register Validation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(422);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"notemail\",\n    \"password\": \"{{user1Password}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/register",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"token is returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"authorisation.token\");",
+											"    pm.environment.set(\"user1Token\", jsonData.authorisation.token);",
+											"});",
+											"",
+											"pm.test(\"user is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.not.have.jsonBody(\"user.password\");",
+											"    pm.response.to.have.jsonBody(\"user.id\");",
+											"    pm.response.to.have.jsonBody(\"user.email\");",
+											"    pm.response.to.have.jsonBody(\"user.name\");",
+											"    pm.environment.set(\"user1ID\", jsonData.user.id);",
+											"    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"user1Username\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.globals.set('user1email', 'test' + Math.floor(Math.random() * 100) + '@example.com');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"{{user1Username}}\",\n    \"password\": \"{{user1Password}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/login",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"{{user1Username}}NotCorrect\",\n    \"password\": \"{{user1Password}}Nope\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/login",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register User 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"token is returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"authorisation.token\");",
+											"    pm.environment.set(\"user2Token\", jsonData.authorisation.token);",
+											"});",
+											"",
+											"pm.test(\"user is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.not.have.jsonBody(\"user.password\");",
+											"    pm.response.to.have.jsonBody(\"user.id\");",
+											"    pm.response.to.have.jsonBody(\"user.email\");",
+											"    pm.response.to.have.jsonBody(\"user.name\");",
+											"    pm.environment.set(\"user2ID\", jsonData.user.id);",
+											"    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"user2Username\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set('user2Username', 'test' + (new Date().valueOf()) + '@example.com');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Second User\",\n    \"email\": \"{{user2Username}}\",\n    \"password\": \"{{user2Password}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/register",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login User 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"token is returned\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"authorisation.token\");",
+											"    pm.environment.set(\"user2Token\", jsonData.authorisation.token);",
+											"});",
+											"",
+											"pm.test(\"user is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.not.have.jsonBody(\"user.password\");",
+											"    pm.response.to.have.jsonBody(\"user.id\");",
+											"    pm.response.to.have.jsonBody(\"user.email\");",
+											"    pm.response.to.have.jsonBody(\"user.name\");",
+											"    pm.environment.set(\"user2ID\", jsonData.user.id);",
+											"    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"user2Username\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"{{user2Username}}\",\n    \"password\": \"{{user2Password}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/auth/login",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Lists",
+					"item": [
+						{
+							"name": "Store List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is a test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is a test description\");",
+											"",
+											"    pm.environment.set(\"user1ListID\", jsonData.id);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test title\",\n    \"description\": \"This is a test description\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Store List - Validation Errors",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(422);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass.\",\n    \"description\": 123\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is an updated test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is an updated test description\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is an updated test title\",\n    \"description\": \"This is an updated test description\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is an updated test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is an updated test description\");",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"});",
+											"",
+											"var response = pm.response.json();"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View List Not allowed for wrong user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user2Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View List Index",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"pagination checks\", function () {",
+											"    pm.response.to.have.jsonBody(\"current_page\");",
+											"    pm.response.to.have.jsonBody(\"first_page_url\");",
+											"    pm.response.to.have.jsonBody(\"from\");",
+											"    pm.response.to.have.jsonBody(\"last_page\");",
+											"    pm.response.to.have.jsonBody(\"last_page_url\");",
+											"    pm.response.to.have.jsonBody(\"links\");",
+											"    pm.response.to.have.jsonBody(\"next_page_url\");",
+											"    pm.response.to.have.jsonBody(\"path\");",
+											"    pm.response.to.have.jsonBody(\"per_page\");",
+											"    pm.response.to.have.jsonBody(\"prev_page_url\");",
+											"    pm.response.to.have.jsonBody(\"to\");",
+											"    pm.response.to.have.jsonBody(\"total\");",
+											"    pm.response.to.have.jsonBody(\"data\");",
+											"",
+											"});",
+											"",
+											"",
+											"var response = pm.response.json();",
+											"response.data.forEach(function(list) {",
+											"    pm.expect(list.user_id).to.eql(pm.environment.get('user1ID'));",
+											"",
+											"    if (list.id === pm.environment.get('user1ListID')) {",
+											"        pm.test(\"list is correct\", function () {",
+											"            pm.expect(list.title).to.eql(\"This is an updated test title\");",
+											"            pm.expect(list.description).to.eql(\"This is an updated test description\");",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{user1Token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Todos",
+					"item": [
+						{
+							"name": "Store Todo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"todo is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get(\"user1ListID\"));",
+											"    pm.expect(jsonData.title).to.eql(\"This is a test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is a test description\");",
+											"",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.deadline).to.eql(null);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"",
+											"    pm.environment.set(\"user1ListTodoID\", jsonData.id);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test title\",\n    \"description\": \"This is a test description\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Store Todo - Validation Fails",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(422);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass. Should be too long to pass.\",\n    \"description\": 123\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Todo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is a test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is a test description\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get('user1ListID'));",
+											"    pm.expect(jsonData.id).to.eql(pm.environment.get('user1ListTodoID'));",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"    pm.response.to.not.have.jsonBody(\"todo_list\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Todo Not Allowed for wrong user.",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is a test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is a test description\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get('user1ListID'));",
+											"    pm.expect(jsonData.id).to.eql(pm.environment.get('user1ListTodoID'));",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"    pm.response.to.not.have.jsonBody(\"todo_list\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Todo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is an updated test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is an updated test description\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get('user1ListID'));",
+											"    pm.expect(jsonData.id).to.eql(pm.environment.get('user1ListTodoID'));",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is an updated test title\",\n    \"description\": \"This is an updated test description\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Todo To Completed",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is an updated test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is an updated test description\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get('user1ListID'));",
+											"    pm.expect(jsonData.id).to.eql(pm.environment.get('user1ListTodoID'));",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"complete\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is an updated test title\",\n    \"description\": \"This is an updated test description\",\n    \"status\": \"complete\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Todo Not Allowed for wrong user.",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user2Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"New title\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Todo Index",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"pagination checks\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"current_page\");",
+											"    pm.expect(jsonData.current_page).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"first_page_url\");",
+											"    pm.response.to.have.jsonBody(\"from\");",
+											"    pm.expect(jsonData.from).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"last_page\");",
+											"    pm.response.to.have.jsonBody(\"last_page_url\");",
+											"    pm.response.to.have.jsonBody(\"links\");",
+											"    pm.response.to.have.jsonBody(\"next_page_url\");",
+											"    pm.response.to.have.jsonBody(\"path\");",
+											"    pm.response.to.have.jsonBody(\"per_page\");",
+											"    pm.response.to.have.jsonBody(\"prev_page_url\");",
+											"    pm.response.to.have.jsonBody(\"to\");",
+											"    pm.expect(jsonData.to).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"total\");",
+											"    pm.expect(jsonData.to).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"data\");",
+											"    pm.expect(jsonData.data.length).to.eql(1);",
+											"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Store Todo with Deadline",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"todo is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.list_id).to.eql(pm.environment.get(\"user1ListID\"));",
+											"    pm.expect(jsonData.title).to.eql(\"This is a test\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is a test\");",
+											"",
+											"    pm.expect(jsonData.deadline).to.eql(\"2025-01-03T12:34:56.000000Z\");",
+											"    pm.expect(jsonData.priority).to.eql(2);",
+											"    pm.expect(jsonData.overdue).to.eql(false);",
+											"    pm.expect(jsonData.status).to.eql(\"incomplete\");",
+											"",
+											"    pm.environment.set(\"user1ListTodoID\", jsonData.id);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Todo not allowed for wrong user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user2Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Todo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Missing Todo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos/{{user1ListTodoID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos",
+										"{{user1ListTodoID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Todo Index Recheck",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"pagination checks\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"current_page\");",
+											"    pm.expect(jsonData.current_page).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"first_page_url\");",
+											"    pm.response.to.have.jsonBody(\"from\");",
+											"    pm.expect(jsonData.from).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"last_page\");",
+											"    pm.response.to.have.jsonBody(\"last_page_url\");",
+											"    pm.response.to.have.jsonBody(\"links\");",
+											"    pm.response.to.have.jsonBody(\"next_page_url\");",
+											"    pm.response.to.have.jsonBody(\"path\");",
+											"    pm.response.to.have.jsonBody(\"per_page\");",
+											"    pm.response.to.have.jsonBody(\"prev_page_url\");",
+											"    pm.response.to.have.jsonBody(\"to\");",
+											"    pm.expect(jsonData.to).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"total\");",
+											"    pm.expect(jsonData.to).to.eql(1);",
+											"    pm.response.to.have.jsonBody(\"data\");",
+											"    pm.expect(jsonData.data.length).to.eql(1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}/todos",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}",
+										"todos"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{user1Token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Checks",
+					"item": [
+						{
+							"name": "View List Has Updated To Completed",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"list is correct\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.response.to.have.jsonBody(\"id\");",
+											"    pm.expect(jsonData.title).to.eql(\"This is an updated test title\");",
+											"    pm.expect(jsonData.description).to.eql(\"This is an updated test description\");",
+											"    pm.expect(jsonData.status).to.eql(\"complete\");",
+											"});",
+											"",
+											"var response = pm.response.json();"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete List not allowed for wrong user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user2Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Missing List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"This is a test\",\n    \"description\": \"This is a test\",\n    \"deadline\": \"2025-01-03 12:34:56\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/lists/{{user1ListID}}",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"lists",
+										"{{user1ListID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Users Index Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"user-agent": true,
+									"host": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user1Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseUrl}}{{apiRoute}}/users",
+									"host": [
+										"{{baseUrl}}{{apiRoute}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{user1Token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
